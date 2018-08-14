@@ -1,5 +1,12 @@
 To run prettier:
-`./node_modules/.bin/prettier --config .prettierrc --write "src/**/*.{js,jsx,scss,css}"`
+`
+./node_modules/.bin/prettier --config .prettierrc --write "src/**/*.{js,jsx,scss,css}"
+`
+
+To run eslint:
+`
+node_modules/.bin/eslint --ext=js --ext=jsx --fix .
+`
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
