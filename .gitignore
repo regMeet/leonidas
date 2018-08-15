@@ -9,3 +9,8 @@ yarn-error.log
 /.idea
 modules.xml
 *.ipr
+
+# dotenv environment variables file(s)
+.env
+!.env.*
+.env.*

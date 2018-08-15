@@ -3,17 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "connected-react-router": "^4.4.1",
+    "history": "^4.7.2",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
-    "prettier": "^1.14.2",
+    "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-scripts": "1.1.4"
+    "react-helmet": "^5.2.0",
+    "react-native": "~0.54.2",
+    "react-native-web": "^0.1.16",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
+    "redux-persist": "^5.10.0",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^3.0.1"
   },
   "scripts": {
     "precommit": "lint-staged",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "lint": "eslint --ext .js,.jsx src",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "test:lint:js": "eslint --ext=js --ext=jsx .",
@@ -25,23 +38,28 @@
   "lint-staged": {
     "src/**/*.{js,jsx,json,scss,css}": [
       "eslint --fix",
-      "prettier --config .prettierrc --write",
+      "prettier --config .prettierrc.js --write",
       "git add"
     ],
     "src/**/*.{scss,css}": [
       "stylelint --config=.stylelintrc --fix",
-      "prettier --config .prettierrc --write",
+      "prettier --config .prettierrc.js --write",
       "git add"
     ]
   },
   "devDependencies": {
-    "eslint": "^4.19.1 || ^5.3.0",
+    "eslint": "^5.3.0",
     "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-import-resolver-node": "^0.3.2",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-prettier": "^2.6.2",
     "eslint-plugin-react": "^7.11.0",
+    "prettier": "^1.14.2",
     "stylelint": "^9.4.0",
-    "stylelint-config-standard": "^18.2.0"
+    "stylelint-config-standard": "^18.2.0",
+    "webpack": "^4.16.5"
   }
 }
