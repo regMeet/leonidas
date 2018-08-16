@@ -14,7 +14,7 @@ const defaultProps = {
   name: null,
 };
 
-const LoggedNavBar = ({ name, logout }) => (
+const AdminNavBar = ({ name, logout }) => (
   <div>
     <ButtonListWrapper>
       <ButtonWrapper>
@@ -24,14 +24,17 @@ const LoggedNavBar = ({ name, logout }) => (
         <Link to="/">Home</Link>
       </ButtonWrapper>
       <ButtonWrapper>
+        <Link to="/users">Users</Link>
+      </ButtonWrapper>
+      <ButtonWrapper>
         <Button primary value="Logout" onClick={logout} />
       </ButtonWrapper>
     </ButtonListWrapper>
   </div>
 );
 
-LoggedNavBar.displayName = 'LoggedNavBar';
-LoggedNavBar.propTypes = propTypes;
-LoggedNavBar.defaultProps = defaultProps;
+AdminNavBar.displayName = 'AdminNavBar';
+AdminNavBar.propTypes = propTypes;
+AdminNavBar.defaultProps = defaultProps;
 
-export default LoggedNavBar;
+export default AdminNavBar;

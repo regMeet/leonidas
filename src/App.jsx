@@ -7,7 +7,14 @@ import { ConnectedRouter } from 'react-router-redux';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 import Home from 'pages/Home';
+import Login from 'pages/Login';
 import Users from 'pages/Users';
+import NoMatch from 'pages/NoMatch';
+
+import withRole from 'modules/Auth/hocs/withRole';
+
+const AdminRole = withRole(['ADMIN']);
+// const UserRole = withAuth(['USER'])
 
 const propTypes = {
   store: PropTypes.object.isRequired,
@@ -28,7 +35,9 @@ const App = ({ store, persistor, history }) => (
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/users" component={Users} />
+            <Route path="/login" component={Login} />
+            <Route path="/users" component={AdminRole(Users)} />
+            <Route component={NoMatch} />
           </Switch>
         </BrowserRouter>
       </ConnectedRouter>

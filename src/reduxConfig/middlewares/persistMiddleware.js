@@ -1,12 +1,13 @@
-import { purgeStoredState } from 'redux-persist';
+import { persistStore, purgeStoredState } from 'redux-persist';
 import persistConfig from '../persistConfig';
 
 /**
  * Handle some redux-persist actions through a middleware.
  */
-const persistMiddleware = () => next => async action => {
+const persistMiddleware = store => next => async action => {
   if (action.type === 'PURGE') {
     await purgeStoredState(persistConfig);
+    persistStore(store);
   }
 
   next(action);
