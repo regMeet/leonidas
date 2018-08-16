@@ -1,6 +1,12 @@
 import { createSelector } from 'reselect';
 import switchcase from 'utils/switchcase';
 
+// Enums
+export const roleEnum = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+};
+
 // Initial State
 const initialState = {
   user: null,
@@ -11,9 +17,12 @@ const getUser = state => state.auth.user;
 
 const getRole = createSelector(getUser, user => user && user.role);
 
+const getUserName = createSelector(getUser, user => user && user.name);
+
 export const selectors = {
   getUser,
   getRole,
+  getUserName,
 };
 
 // Actions

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import Header from 'pages/Header';
+import NavigationHeader from 'components/TopNavBar/containers';
 
 const propTypes = {
   history: PropTypes.object.isRequired,
@@ -9,7 +9,7 @@ const propTypes = {
 
 const Home = ({ history }) => (
   <div>
-    <Header />
+    <NavigationHeader />
     <h1>Home</h1>
     <p>Welcome home!</p>
 

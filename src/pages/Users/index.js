@@ -1,9 +1,9 @@
 import React from 'react';
-import Header from 'pages/Header';
+import NavigationHeader from 'components/TopNavBar/containers';
 
 const Users = () => (
   <div>
-    <Header />
+    <NavigationHeader />
     <h1>Users</h1>
     <p>Welcome to the users page!</p>
   </div>
