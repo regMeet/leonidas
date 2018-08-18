@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { selectors as AuthSelectors, saveUser } from 'modules/Auth';
+import { selectors as AuthSelectors, login } from 'modules/Auth';
 import NavigationHeader from 'components/TopNavBar/containers';
 
 class Login extends PureComponent {
@@ -10,7 +10,7 @@ class Login extends PureComponent {
     history: PropTypes.object.isRequired,
     user: PropTypes.object,
     error: PropTypes.bool,
-    handleSaveUser: PropTypes.func.isRequired,
+    handleLogin: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -25,30 +25,15 @@ class Login extends PureComponent {
     }
   }
 
-  loginAdmin = () => {
-    const user = {
-      name: 'Alan',
-      role: 'ADMIN',
-    };
-
-    const { handleSaveUser, history } = this.props;
-    handleSaveUser(user);
-    history.push('/');
-  };
-
-  loginUser = () => {
-    const user = {
-      name: 'Alan',
-      role: 'USER',
-    };
-
-    const { handleSaveUser, history } = this.props;
-    handleSaveUser(user);
-    history.push('/');
-  };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.user) {
+      const { history } = this.props;
+      history.push('/');
+    }
+  }
 
   render() {
-    const { error } = this.props;
+    const { error, handleLogin } = this.props;
 
     return (
       <div>
@@ -59,11 +44,12 @@ class Login extends PureComponent {
         <p>Welcome to the Login page!</p>
 
         <div>
-          <button type="button" onClick={this.loginAdmin}>
-            Log in with Facebook - admin
+          <button type="button" onClick={() => handleLogin('Google')}>
+            Log in with Google
           </button>
-          <button type="button" onClick={this.loginUser}>
-            Log in with Google - user
+
+          <button type="button" onClick={() => handleLogin('Facebook')}>
+            Log in with Facebook
           </button>
         </div>
       </div>
@@ -76,7 +62,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  handleSaveUser: saveUser,
+  handleLogin: login,
 };
 
 export default withRouter(

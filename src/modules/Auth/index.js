@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import switchcase from 'utils/switchcase';
+import { loginWithGoogle, loginWithFacebook, getUserDB, logoutDB } from './firebase';
 
 // Enums
 export const roleEnum = {
@@ -40,9 +41,31 @@ export const logoutUser = () => ({
 });
 
 // Thunks
+/* eslint-disable no-unused-vars */
+export const login = type => async dispatch => {
+  let user = null;
+  // TODO: use switch here.
+  if (type === 'Google') {
+    user = await loginWithGoogle();
+  } else if (type === 'Facebook') {
+    user = await loginWithFacebook();
+  }
+
+  if (user !== null) {
+    // look user into database
+    const userFound = await getUserDB(user);
+    if (userFound) {
+      // store user in the reducer
+      dispatch(saveUser(userFound));
+    }
+    // TODO: Else, there was an error trying to log in, try again later.
+  }
+};
+
 export const logout = () => async dispatch => {
   dispatch({ type: 'PURGE' });
   dispatch(logoutUser());
+  logoutDB();
   // Remove cookies or storage
 };
 

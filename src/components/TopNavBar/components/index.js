@@ -28,11 +28,11 @@ class NavigationHeader extends PureComponent {
     const { user } = this.props;
 
     if (user) {
-      const { name, role } = user;
+      const { displayName, role } = user;
       if (role === roleEnum.USER) {
-        return <LoggedNavBar name={name} logout={this.logoutUser} />;
+        return <LoggedNavBar name={displayName} logout={this.logoutUser} />;
       }
-      return <AdminNavBar name={name} logout={this.logoutUser} />;
+      return <AdminNavBar name={displayName} logout={this.logoutUser} />;
     }
     return <DefaultNavBar />;
   }
