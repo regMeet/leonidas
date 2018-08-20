@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import { roleEnum } from 'modules/Auth';
-import DefaultNavBar from './DefaultNavBar';
-import LoggedNavBar from './LoggedNavBar';
-import AdminNavBar from './AdminNavBar';
+import DefaultNavBar from './DefaultNavBar/index';
+import LoggedNavBar from './LoggedNavBar/index';
+import AdminNavBar from './AdminNavBar/index';
 
 class NavigationHeader extends PureComponent {
   static propTypes = {

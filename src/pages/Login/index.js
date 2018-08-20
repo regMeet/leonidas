@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { selectors as AuthSelectors, login } from 'modules/Auth';
-import NavigationHeader from 'components/TopNavBar/containers';
+import NavigationHeader from 'modules/TopNavBar/containers';
 
 class Login extends PureComponent {
   static propTypes = {

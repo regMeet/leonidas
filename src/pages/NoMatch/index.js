@@ -1,5 +1,5 @@
 import React from 'react';
-import NavigationHeader from 'components/TopNavBar/containers';
+import NavigationHeader from 'modules/TopNavBar/containers';
 
 const NoMatch = () => (
   <div>

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { selectors as AuthSelectors, logout } from 'modules/Auth';
-import NavigationHeader from '../components';
+import NavigationHeader from '../components/index';
 
 const mapStateToProps = state => ({
   user: AuthSelectors.getUser(state),
