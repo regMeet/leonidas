@@ -1,4 +1,4 @@
-import { firebaseAuth, googleProvider, facebookProvider, dbUsers, dbRoles } from './config';
+import { firebaseAuth, googleProvider, facebookProvider } from './config';
 
 /* eslint-disable no-unused-vars */
 export const loginWithGoogle = async () => {
@@ -55,46 +55,6 @@ export const loginWithFacebook = async () => {
     console.log(
       `errorCode: ${code}; errorMessage: ${message}; email: ${email}; credential: ${credential}`,
     );
-    return null;
-  }
-};
-
-const createUser = async user => {
-  try {
-    await dbUsers.doc(user.email).set(user);
-    return user;
-  } catch (error) {
-    console.log('error creating user from Firebase', error);
-    return null;
-  }
-};
-
-export const getUserDB = async user => {
-  const { email } = user;
-  try {
-    // look user document into database
-    const userDocument = await dbUsers.doc(email).get();
-    if (userDocument.exists) {
-      const userFound = userDocument.data();
-      const roleFound = await dbRoles.doc(email).get();
-
-      if (roleFound.exists) {
-        userFound.role = roleFound.data().role;
-      } else {
-        userFound.role = 'USER';
-      }
-      return userFound;
-    }
-
-    // save new user in case it does not exist in DB
-    const newUser = await createUser(user);
-
-    if (newUser) {
-      newUser.role = 'USER';
-    }
-    return newUser;
-  } catch (error) {
-    console.log('error reading user from Firebase', error);
     return null;
   }
 };

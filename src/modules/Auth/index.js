@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import switchcase from 'utils/switchcase';
-import { loginWithGoogle, loginWithFacebook, getUserDB, logoutDB } from './firebase';
+import { loginWithGoogle, loginWithFacebook, logoutDB } from 'modules/Firebase/auth';
+import { getUserDB, createUserDB, getRoleDB } from 'modules/Firebase/users';
 
 // Enums
 export const roleEnum = {
@@ -53,8 +54,14 @@ export const login = type => async dispatch => {
 
   if (user !== null) {
     // look user into database
-    const userFound = await getUserDB(user);
+    let userFound = await getUserDB(user.email);
+    if (!userFound) {
+      userFound = await createUserDB(user);
+    }
+
     if (userFound) {
+      userFound.photoURL = user.photoURL;
+      userFound.role = await getRoleDB(user.email);
       // store user in the reducer
       dispatch(saveUser(userFound));
     }

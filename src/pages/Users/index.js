@@ -1,11 +1,11 @@
 import React from 'react';
 import NavigationHeader from 'modules/TopNavBar/containers';
+import UsersTable from 'modules/Users/containers/UsersTable';
 
 const Users = () => (
   <div>
     <NavigationHeader />
-    <h1>Users</h1>
-    <p>Welcome to the users page!</p>
+    <UsersTable />
   </div>
 );
 
