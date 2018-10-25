@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import switchcase from 'utils/switchcase';
-import { loginWithGoogle, loginWithFacebook, logoutDB } from 'modules/Firebase/auth';
+import { loginWithGoogle, logoutDB } from 'modules/Firebase/auth';
 import { getUserDB, createUserDB, getRoleDB } from 'modules/Firebase/users';
 
 // Enums
@@ -43,14 +43,8 @@ export const logoutUser = () => ({
 
 // Thunks
 /* eslint-disable no-unused-vars */
-export const login = type => async dispatch => {
-  let user = null;
-  // TODO: use switch here.
-  if (type === 'Google') {
-    user = await loginWithGoogle();
-  } else if (type === 'Facebook') {
-    user = await loginWithFacebook();
-  }
+export const login = () => async dispatch => {
+  const user = await loginWithGoogle();
 
   if (user !== null) {
     // look user into database

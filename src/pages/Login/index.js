@@ -44,12 +44,8 @@ class Login extends PureComponent {
         <p>Welcome to the Login page!</p>
 
         <div>
-          <button type="button" onClick={() => handleLogin('Google')}>
+          <button type="button" onClick={() => handleLogin()}>
             Log in with Google
-          </button>
-
-          <button type="button" onClick={() => handleLogin('Facebook')}>
-            Log in with Facebook
           </button>
         </div>
       </div>
