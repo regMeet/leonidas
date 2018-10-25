@@ -41,9 +41,9 @@ export const getRoleDB = async email => {
   let roleFound = 'USER';
 
   try {
-    roleFound = await dbRoles.doc(email).get();
-    if (roleFound.exists) {
-      roleFound = roleFound.data().role;
+    const roleDocument = await dbRoles.doc(email).get();
+    if (roleDocument.exists) {
+      roleFound = roleDocument.data().role;
     }
   } catch (error) {
     console.log('error reading role from Firebase', error);
