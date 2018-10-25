@@ -9,6 +9,7 @@ import { Route, Switch, BrowserRouter } from 'react-router-dom';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Users from 'pages/Users';
+import MachineData from 'pages/MachineData';
 import NoMatch from 'pages/NoMatch';
 
 import withRole from 'modules/Auth/hocs/withRole';
@@ -37,6 +38,7 @@ const App = ({ store, persistor, history }) => (
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/users" component={AdminRole(Users)} />
+            <Route path="/machine-data" component={AdminRole(MachineData)} />
             <Route component={NoMatch} />
           </Switch>
         </BrowserRouter>

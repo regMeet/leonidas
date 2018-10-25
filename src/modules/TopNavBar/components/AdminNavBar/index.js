@@ -27,6 +27,9 @@ const AdminNavBar = ({ name, photoURL, logout }) => (
         <Link to="/users">Users</Link>
       </ButtonWrapper>
       <ButtonWrapper>
+        <Link to="/machine-data">Load Machine data</Link>
+      </ButtonWrapper>
+      <ButtonWrapper>
         <Avatar src={photoURL} />
         <span>{`Welcome ${name}`}</span>
       </ButtonWrapper>

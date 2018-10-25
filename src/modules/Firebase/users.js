@@ -25,7 +25,6 @@ export const getUserDB = async email => {
   return userFound;
 };
 
-/* eslint-disable */
 export const getUsersDB = async () => {
   let users = null;
   try {

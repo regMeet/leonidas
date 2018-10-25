@@ -26,3 +26,4 @@ const settings = {
 db.settings(settings);
 export const dbUsers = db.collection('users');
 export const dbRoles = db.collection('roles');
+export const dbMachineData = db.collection('machineData');
