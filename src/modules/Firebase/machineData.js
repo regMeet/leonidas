@@ -1,17 +1,17 @@
 import map from 'lodash/fp/map';
-import { dbMachineData } from './config';
+import { dbMachineData, currentTimestamp } from './config';
 
 export const createEntryDB = async entry => {
   try {
-    await dbMachineData.add(entry);
-    return entry;
+    const addDoc = await dbMachineData.add({ ...entry, created: currentTimestamp() });
+    return { ...entry, id: addDoc.id };
   } catch (error) {
     console.log('error creating entry of machine data from Firebase', error);
     return null;
   }
 };
 
-export const getEntryByIdDB = async id => {
+export const getMachineDataByIdDB = async id => {
   let entryFound = null;
   try {
     const document = await dbMachineData.doc(id).get();
@@ -24,38 +24,38 @@ export const getEntryByIdDB = async id => {
   return entryFound;
 };
 
-export const getEntriesDB = async () => {
+export const getMachineDataDB = async () => {
   let entries = null;
   try {
     const entriesDocument = await dbMachineData.get();
-    entries = map(entryDoc => entryDoc.data())(entriesDocument.docs);
+    entries = map(entryDoc => ({ ...entryDoc.data(), id: entryDoc.id }))(entriesDocument.docs);
   } catch (error) {
     console.log('error reading entry of machine data from Firebase', error);
   }
   return entries;
 };
 
-export const updateEntryById = async (id, entry) => {
-  let success = false;
+export const updateMachineDataByIdDB = async entry => {
+  const updatedEntry = {
+    ...entry,
+    updated: currentTimestamp(),
+  };
 
   try {
-    await dbMachineData.doc(id).update(entry);
-    success = true;
-    console.log('Document successfully updated!');
+    await dbMachineData.doc(entry.id).update(updatedEntry);
+    return updatedEntry;
   } catch (error) {
     console.log('error updating entry of machine data from Firebase', error);
+    return null;
   }
-
-  return success;
 };
 
-export const deleteEntryById = async id => {
+export const deleteMachineDataByIdDB = async id => {
   let success = false;
 
   try {
     await dbMachineData.doc(id).delete();
     success = true;
-    console.log('Document successfully deleted!');
   } catch (error) {
     console.log('error removing entry of machine data from Firebase', error);
   }

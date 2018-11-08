@@ -1,29 +1,38 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import { colors } from 'utils/Theme';
+import { Card } from 'reactstrap';
+import { EditingState } from '@devexpress/dx-react-grid';
+import {
+  Grid,
+  Table,
+  TableHeaderRow,
+  TableEditRow,
+  TableEditColumn,
+} from '@devexpress/dx-react-grid-bootstrap4';
 
-import ClickableIcon from 'components/ClickableIcon';
-import ActionsWrapper from './partials/ActionsWrapper';
-import TableContainer from './partials/TableContainer';
-
-const tableStyle = {
-  backgroundColor: colors.primary,
-  color: colors.secondary,
-};
-
-class ListUsers extends PureComponent {
+class MachineDataSection extends PureComponent {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    entries: PropTypes.array,
+    machineData: PropTypes.array,
+    tableColumns: PropTypes.array,
     errorMessage: PropTypes.string,
     fetchMachineData: PropTypes.func.isRequired,
+    createMachineDataEntry: PropTypes.func.isRequired,
+    updateMachineDataById: PropTypes.func.isRequired,
+    deleteMachineDataById: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    entries: null,
+    machineData: null,
     errorMessage: '',
+    // TODO: take this out
+    tableColumns: [
+      { name: 'name', title: 'Nombre Maquina' },
+      { name: 'type', title: 'Tipo' },
+      { name: 'city', title: 'Ciudad' },
+      { name: 'temperature', title: 'Temperatura' },
+      { name: 'date', title: 'Fecha' },
+    ],
   };
 
   componentDidMount() {
@@ -31,20 +40,21 @@ class ListUsers extends PureComponent {
     fetchMachineData();
   }
 
-  deleteEntry = (id, entry) => {
-    console.log('id', id);
-    console.log('entry', entry);
+  commitChanges = ({ added, changed, deleted }) => {
+    const { createMachineDataEntry, updateMachineDataById, deleteMachineDataById } = this.props;
+    if (added) {
+      createMachineDataEntry(added);
+    }
+    if (changed) {
+      updateMachineDataById(changed);
+    }
+    if (deleted) {
+      deleteMachineDataById(deleted);
+    }
   };
 
-  // eslint-disable-next-line
-  actionsButtons = (id, entry) => (
-    <ActionsWrapper>
-      <ClickableIcon icon="glyphicon-trash" handleOnClick={() => this.deleteEntry(id, entry)} />
-    </ActionsWrapper>
-  );
-
   render() {
-    const { isLoading, entries, errorMessage } = this.props;
+    const { isLoading, machineData, tableColumns, errorMessage } = this.props;
 
     if (errorMessage) {
       return <div>{errorMessage}</div>;
@@ -54,20 +64,21 @@ class ListUsers extends PureComponent {
       return <div>Loading</div>;
     }
 
+    // TODO: add date picker
+    // TODO: make some fields mandatory
+
     return (
-      <div>
-        <TableContainer>
-          <BootstrapTable data={entries} striped hover headerStyle={tableStyle}>
-            <TableHeaderColumn dataField="name">Name</TableHeaderColumn>
-            <TableHeaderColumn dataField="temperature">Temperature</TableHeaderColumn>
-            <TableHeaderColumn dataField="id" isKey dataFormat={this.actionsButtons}>
-              Actions
-            </TableHeaderColumn>
-          </BootstrapTable>
-        </TableContainer>
-      </div>
+      <Card>
+        <Grid rows={machineData} columns={tableColumns} getRowId={row => row.id}>
+          <EditingState onCommitChanges={this.commitChanges} />
+          <Table />
+          <TableHeaderRow />
+          <TableEditRow />
+          <TableEditColumn showAddCommand showEditCommand showDeleteCommand />
+        </Grid>
+      </Card>
     );
   }
 }
 
-export default ListUsers;
+export default MachineDataSection;

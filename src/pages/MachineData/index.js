@@ -1,12 +1,12 @@
 import React from 'react';
 import NavigationHeader from 'modules/TopNavBar/containers';
-import MachineDataSection from 'modules/MachineData/components';
+import MachineDataTable from 'modules/MachineData/containers/MachineDataTable';
 
 const MachineData = () => (
   <div>
     <NavigationHeader />
     <h1>Machine Data</h1>
-    <MachineDataSection />
+    <MachineDataTable />
   </div>
 );
 
