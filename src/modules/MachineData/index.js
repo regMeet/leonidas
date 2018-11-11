@@ -157,8 +157,7 @@ export const updateMachineDataById = data => async (dispatch, getState) => {
 };
 
 // cambiar tambien el store.
-export const deleteMachineDataById = data => async dispatch => {
-  const id = data[0];
+export const deleteMachineDataById = id => async dispatch => {
   dispatch(deleteEntryStart());
   try {
     await deleteMachineDataByIdDB(id);

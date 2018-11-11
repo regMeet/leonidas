@@ -31,7 +31,7 @@ const AdminNavBar = ({ name, photoURL, logout }) => (
       </ButtonWrapper>
       <ButtonWrapper>
         <Avatar src={photoURL} />
-        <span>{`Welcome ${name}`}</span>
+        <span>{`Welcome Admin ${name}`}</span>
       </ButtonWrapper>
       <ButtonWrapper>
         <Button primary value="Logout" onClick={logout} />
