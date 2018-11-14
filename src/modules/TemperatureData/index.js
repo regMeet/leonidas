@@ -4,55 +4,46 @@ import reject from 'lodash/fp/reject';
 import switchcase from 'utils/switchcase';
 import {
   createEntryDB,
-  getMachineDataDB,
-  updateMachineDataByIdDB,
-  deleteMachineDataByIdDB,
-} from 'modules/Firebase/machineData';
+  getDataDB,
+  updateDataByIdDB,
+  deleteDataByIdDB,
+} from 'modules/Firebase/temperatureData';
 import i18nConstants from './i18nConstants';
 
 // Initial State
 const initialState = {
   entries: [],
   isLoading: false,
-  isCreating: false, // TODO: show an spinner
-  isUpdating: false, // TODO: show an spinner
-  isDeleting: false, // TODO: show an spinner
   errorMessage: '',
 };
 
 // Selectors
-const getMachineData = state => state.machineData.entries;
-const isLoading = state => state.machineData.isLoading;
-const isCreating = state => state.machineData.isCreating;
-const isUpdating = state => state.machineData.isUpdating;
-const isDeleting = state => state.machineData.isDeleting;
-const getErrorMessage = state => state.machineData.errorMessage;
+const getData = state => state.temperatureDate.entries;
+const isLoading = state => state.temperatureDate.isLoading;
+const getErrorMessage = state => state.temperatureDate.errorMessage;
 
 export const selectors = {
-  getMachineData,
+  getData,
   isLoading,
-  isCreating,
-  isUpdating,
-  isDeleting,
   getErrorMessage,
 };
 
 // Actions
-export const FETCH_ENTRIES_START = 'leonidas/MachineData/FETCH_ENTRIES_START';
-export const FETCH_ENTRIES_SUCCESS = 'leonidas/MachineData/FETCH_ENTRIES_SUCCESS';
-export const FETCH_ENTRIES_FAILURE = 'leonidas/MachineData/FETCH_ENTRIES_FAILURE';
+export const FETCH_ENTRIES_START = 'leonidas/TemperatureData/FETCH_ENTRIES_START';
+export const FETCH_ENTRIES_SUCCESS = 'leonidas/TemperatureData/FETCH_ENTRIES_SUCCESS';
+export const FETCH_ENTRIES_FAILURE = 'leonidas/TemperatureData/FETCH_ENTRIES_FAILURE';
 
-export const ACTION_CREATE_START = 'leonidas/MachineData/ACTION_CREATE_START';
-export const ACTION_CREATE_SUCCESS = 'leonidas/MachineData/ACTION_CREATE_SUCCESS';
-export const ACTION_CREATE_FAILURE = 'leonidas/MachineData/ACTION_CREATE_FAILURE';
+export const ACTION_CREATE_START = 'leonidas/TemperatureData/ACTION_CREATE_START';
+export const ACTION_CREATE_SUCCESS = 'leonidas/TemperatureData/ACTION_CREATE_SUCCESS';
+export const ACTION_CREATE_FAILURE = 'leonidas/TemperatureData/ACTION_CREATE_FAILURE';
 
-export const ACTION_UPDATE_START = 'leonidas/MachineData/ACTION_UPDATE_START';
-export const ACTION_UPDATE_SUCCESS = 'leonidas/MachineData/ACTION_UPDATE_SUCCESS';
-export const ACTION_UPDATE_FAILURE = 'leonidas/MachineData/ACTION_UPDATE_FAILURE';
+export const ACTION_UPDATE_START = 'leonidas/TemperatureData/ACTION_UPDATE_START';
+export const ACTION_UPDATE_SUCCESS = 'leonidas/TemperatureData/ACTION_UPDATE_SUCCESS';
+export const ACTION_UPDATE_FAILURE = 'leonidas/TemperatureData/ACTION_UPDATE_FAILURE';
 
-export const ACTION_DELETE_START = 'leonidas/MachineData/ACTION_DELETE_START';
-export const ACTION_DELETE_SUCCESS = 'leonidas/MachineData/ACTION_DELETE_SUCCESS';
-export const ACTION_DELETE_FAILURE = 'leonidas/MachineData/ACTION_DELETE_FAILURE';
+export const ACTION_DELETE_START = 'leonidas/TemperatureData/ACTION_DELETE_START';
+export const ACTION_DELETE_SUCCESS = 'leonidas/TemperatureData/ACTION_DELETE_SUCCESS';
+export const ACTION_DELETE_FAILURE = 'leonidas/TemperatureData/ACTION_DELETE_FAILURE';
 
 // Action creators
 const fetchEntriesStart = () => ({
@@ -112,11 +103,11 @@ const deleteEntryFailure = error => ({
 });
 
 // Thunks
-export const fetchMachineData = () => async dispatch => {
+export const fetchData = () => async dispatch => {
   dispatch(fetchEntriesStart());
 
   try {
-    const entries = await getMachineDataDB();
+    const entries = await getDataDB();
     dispatch(fetchEntriesSuccess(entries));
   } catch (err) {
     console.log('Firebase error', err);
@@ -124,7 +115,7 @@ export const fetchMachineData = () => async dispatch => {
   }
 };
 
-export const createMachineDataEntry = data => async dispatch => {
+export const createDataEntry = data => async dispatch => {
   const entry = data[0];
   dispatch(createEntryStart());
 
@@ -132,13 +123,13 @@ export const createMachineDataEntry = data => async dispatch => {
     const newEntry = await createEntryDB(entry);
     dispatch(createEntrySucess(newEntry));
   } catch (err) {
-    console.log('Firebase error when updating machine data', err);
+    console.log('Firebase error when updating temperature data', err);
     dispatch(createEntryFailure(err || i18nConstants['Api.GenericError']));
   }
 };
 
-export const updateMachineDataById = data => async (dispatch, getState) => {
-  const currentEntries = getMachineData(getState());
+export const updateDataById = data => async (dispatch, getState) => {
+  const currentEntries = getData(getState());
   const foundEntry = find(entry => data[entry.id])(currentEntries);
   if (foundEntry === undefined || !data[foundEntry.id]) {
     return;
@@ -147,21 +138,21 @@ export const updateMachineDataById = data => async (dispatch, getState) => {
 
   dispatch(updateEntryStart());
   try {
-    await updateMachineDataByIdDB(updatedEntry);
+    await updateDataByIdDB(updatedEntry);
     dispatch(updateEntrySucess(updatedEntry));
   } catch (err) {
-    console.log('Firebase error when updating machine data', err);
+    console.log('Firebase error when updating temperature data', err);
     dispatch(updateEntryFailure(err || i18nConstants['Api.GenericError']));
   }
 };
 
-export const deleteMachineDataById = id => async dispatch => {
+export const deleteDataById = id => async dispatch => {
   dispatch(deleteEntryStart());
   try {
-    await deleteMachineDataByIdDB(id);
+    await deleteDataByIdDB(id);
     dispatch(deleteEntrySucess(id));
   } catch (err) {
-    console.log('Firebase error when updating machine data', err);
+    console.log('Firebase error when updating temperature data', err);
     dispatch(deleteEntryFailure(err || i18nConstants['Api.GenericError']));
   }
 };
@@ -186,26 +177,26 @@ export default (state = initialState, action) =>
     // creating new entry
     [ACTION_CREATE_START]: () => ({
       ...state,
-      isCreating: true,
+      isLoading: true,
     }),
     [ACTION_CREATE_SUCCESS]: () => ({
       ...state,
-      isCreating: false,
+      isLoading: false,
       entries: [action.payload, ...state.entries],
     }),
     [ACTION_CREATE_FAILURE]: () => ({
       ...state,
-      isCreating: false,
+      isLoading: false,
       errorMessage: action.payload,
     }),
     // updating some entry
     [ACTION_UPDATE_START]: () => ({
       ...state,
-      isDeleting: true,
+      isLoading: true,
     }),
     [ACTION_UPDATE_SUCCESS]: () => ({
       ...state,
-      isDeleting: false,
+      isLoading: false,
       // insert here
       entries: map(
         entry => (entry.id === action.payload.id ? { ...entry, ...action.payload } : entry),
@@ -213,22 +204,22 @@ export default (state = initialState, action) =>
     }),
     [ACTION_UPDATE_FAILURE]: () => ({
       ...state,
-      isDeleting: false,
+      isLoading: false,
       errorMessage: action.payload,
     }),
     // deleting an entry
     [ACTION_DELETE_START]: () => ({
       ...state,
-      isDeleting: true,
+      isLoading: true,
     }),
     [ACTION_DELETE_SUCCESS]: () => ({
       ...state,
-      isDeleting: false,
+      isLoading: false,
       entries: reject(entry => entry.id === action.id)(state.entries),
     }),
     [ACTION_DELETE_FAILURE]: () => ({
       ...state,
-      isDeleting: false,
+      isLoading: false,
       errorMessage: action.payload,
     }),
   })(state)(action.type);

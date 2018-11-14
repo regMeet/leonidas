@@ -30,6 +30,9 @@ const AdminNavBar = ({ name, photoURL, logout }) => (
         <Link to="/machine-data">Load Machine data</Link>
       </ButtonWrapper>
       <ButtonWrapper>
+        <Link to="/temperature-data">Load Temperature data</Link>
+      </ButtonWrapper>
+      <ButtonWrapper>
         <Avatar src={photoURL} />
         <span>{`Welcome Admin ${name}`}</span>
       </ButtonWrapper>

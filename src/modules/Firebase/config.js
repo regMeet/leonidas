@@ -27,3 +27,4 @@ export const currentTimestamp = firebaseApp.firestore.FieldValue.serverTimestamp
 export const dbUsers = db.collection('users');
 export const dbRoles = db.collection('roles');
 export const dbMachineData = db.collection('machineData');
+export const dbTemperatureData = db.collection('temperatureData');

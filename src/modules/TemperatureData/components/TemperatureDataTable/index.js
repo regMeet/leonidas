@@ -2,13 +2,16 @@ import React, { PureComponent } from 'react';
 import filter from 'lodash/fp/filter';
 import find from 'lodash/fp/find';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card } from 'reactstrap';
 import {
   SortingState,
   PagingState,
   EditingState,
+  SummaryState,
   IntegratedPaging,
   IntegratedSorting,
+  IntegratedSummary,
 } from '@devexpress/dx-react-grid';
 import {
   Grid,
@@ -17,25 +20,36 @@ import {
   TableEditRow,
   TableEditColumn,
   PagingPanel,
+  TableSummaryRow,
 } from '@devexpress/dx-react-grid-bootstrap4';
+import TemperatureTypeProvider from 'components/Table/cellProviders/temperature-type-provider';
+import DateTypeProvider from 'components/Table/cellProviders/date-type-provider';
+import HighlightedCell from 'components/Table/cellTypes/highlighted-cell';
 import Loading from 'components/Loading';
 import CommandButtons from 'components/Table/CommandButtons';
 
-class MachineDataSection extends PureComponent {
+const Cell = props => {
+  const { column } = props;
+  if (column.name === 'temperature') {
+    return <HighlightedCell {...props} />;
+  }
+  return <Table.Cell {...props} />;
+};
+
+class TemperatureDataSection extends PureComponent {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    machineData: PropTypes.array,
+    data: PropTypes.array,
     errorMessage: PropTypes.string,
-    fetchMachineData: PropTypes.func.isRequired,
-    createMachineDataEntry: PropTypes.func.isRequired,
-    updateMachineDataById: PropTypes.func.isRequired,
-    deleteMachineDataById: PropTypes.func.isRequired,
+    fetchData: PropTypes.func.isRequired,
+    createDataEntry: PropTypes.func.isRequired,
+    updateDataById: PropTypes.func.isRequired,
+    deleteDataById: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    machineData: null,
+    data: null,
     errorMessage: '',
-    // TODO: put some other loading spinners when creating, editing, deleting
   };
 
   constructor(props) {
@@ -44,18 +58,24 @@ class MachineDataSection extends PureComponent {
     this.state = {
       tableColumns: [
         { name: 'name', title: 'Nombre Maquina' },
-        { name: 'city', title: 'Ciudad' },
-        { name: 'description', title: 'Description' },
+        { name: 'temperature', title: 'Temperatura' },
+        { name: 'date', title: 'Fecha' },
       ],
       tableColumnExtensions: [
         { columnName: 'name', width: 200 },
-        { columnName: 'city', width: 180, align: 'right' },
-        { columnName: 'description', width: 180 },
+        { columnName: 'temperature', width: 180, align: 'right' },
+        { columnName: 'date', width: 180 },
       ],
       sorting: [],
       currentPage: 0,
       pageSize: 0,
       pageSizes: [5, 10, 0],
+      temperatureColumns: ['temperature'],
+      dateColumns: ['date'],
+      totalSummaryItems: [
+        { columnName: 'temperature', type: 'avg' },
+        { columnName: 'temperature', type: 'count' },
+      ],
       editingRowIds: [],
       addedRows: [],
       rowChanges: {},
@@ -66,8 +86,8 @@ class MachineDataSection extends PureComponent {
   }
 
   componentDidMount() {
-    const { fetchMachineData } = this.props;
-    fetchMachineData();
+    const { fetchData } = this.props;
+    fetchData();
   }
 
   changeSorting = sorting => this.setState({ sorting });
@@ -87,28 +107,28 @@ class MachineDataSection extends PureComponent {
           Object.keys(row).length
             ? row
             : {
-                name: 'Maquina A',
-                city: 'Merida',
-                description: 'Descripcion',
+                name: 'Maquina A', // look for the available machines
+                temperature: 100,
+                date: moment().format(),
               },
       ),
     });
 
   commitChanges = ({ added, changed, deleted }) => {
-    const { createMachineDataEntry, updateMachineDataById, machineData } = this.props;
+    const { createDataEntry, updateDataById, data } = this.props;
     const { deletingRowIds } = this.state;
     if (added) {
-      createMachineDataEntry(added);
+      createDataEntry(added);
       this.setState({ addedRows: [] });
     }
     if (changed) {
-      updateMachineDataById(changed);
+      updateDataById(changed);
     }
     if (deleted) {
       const newDeletingRowIds = [...deletingRowIds, deleted[0]];
       const deletingRow = filter(entry =>
         find(deletingRowId => deletingRowId === entry.id)(newDeletingRowIds),
-      )(machineData);
+      )(data);
 
       this.setState({ deletingRowIds: newDeletingRowIds, deletingRow });
     }
@@ -117,16 +137,16 @@ class MachineDataSection extends PureComponent {
   cancelDelete = () => this.setState({ deletingRowIds: [] });
 
   deleteRows = () => {
-    const { deleteMachineDataById } = this.props;
+    const { deleteDataById } = this.props;
     const { deletingRowIds } = this.state;
     deletingRowIds.forEach(rowId => {
-      deleteMachineDataById(rowId);
+      deleteDataById(rowId);
     });
     this.setState({ deletingRowIds: [] });
   };
 
   render() {
-    const { isLoading, machineData, errorMessage } = this.props;
+    const { isLoading, data, errorMessage } = this.props;
 
     const {
       tableColumns,
@@ -135,6 +155,9 @@ class MachineDataSection extends PureComponent {
       currentPage,
       pageSize,
       pageSizes,
+      temperatureColumns,
+      dateColumns,
+      totalSummaryItems,
       editingRowIds,
       rowChanges,
       addedRows,
@@ -154,7 +177,7 @@ class MachineDataSection extends PureComponent {
 
     return (
       <Card>
-        <Grid rows={machineData} columns={tableColumns} getRowId={row => row.id}>
+        <Grid rows={data} columns={tableColumns} getRowId={row => row.id}>
           <SortingState sorting={sorting} onSortingChange={this.changeSorting} />
 
           <PagingState
@@ -174,10 +197,16 @@ class MachineDataSection extends PureComponent {
             onCommitChanges={this.commitChanges}
           />
 
+          <SummaryState totalItems={totalSummaryItems} />
+
           <IntegratedSorting />
           <IntegratedPaging />
+          <IntegratedSummary />
 
-          <Table columnExtensions={tableColumnExtensions} />
+          <TemperatureTypeProvider for={temperatureColumns} />
+          <DateTypeProvider for={dateColumns} />
+
+          <Table columnExtensions={tableColumnExtensions} cellComponent={Cell} />
           <TableHeaderRow showSortingControls />
           <TableEditRow />
           <TableEditColumn
@@ -188,6 +217,7 @@ class MachineDataSection extends PureComponent {
             commandComponent={CommandButtons}
           />
 
+          <TableSummaryRow />
           <PagingPanel pageSizes={pageSizes} />
         </Grid>
 
@@ -196,7 +226,9 @@ class MachineDataSection extends PureComponent {
           <ModalBody>
             <p>Are you sure you want to delete the following row?</p>
             <Grid rows={deletingRow} columns={tableColumns}>
-              <Table columnExtensions={tableColumnExtensions} />
+              <TemperatureTypeProvider for={temperatureColumns} />
+              <DateTypeProvider for={dateColumns} />
+              <Table columnExtensions={tableColumnExtensions} cellComponent={Cell} />
               <TableHeaderRow />
             </Grid>
           </ModalBody>
@@ -212,4 +244,4 @@ class MachineDataSection extends PureComponent {
   }
 }
 
-export default MachineDataSection;
+export default TemperatureDataSection;

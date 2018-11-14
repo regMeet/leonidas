@@ -10,6 +10,7 @@ import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Users from 'pages/Users';
 import MachineData from 'pages/MachineData';
+import TemperatureData from 'pages/TemperatureData';
 import NoMatch from 'pages/NoMatch';
 
 import withRole from 'modules/Auth/hocs/withRole';
@@ -39,6 +40,7 @@ const App = ({ store, persistor, history }) => (
             <Route path="/login" component={Login} />
             <Route path="/users" component={AdminRole(Users)} />
             <Route path="/machine-data" component={AdminRole(MachineData)} />
+            <Route path="/temperature-data" component={AdminRole(TemperatureData)} />
             <Route component={NoMatch} />
           </Switch>
         </BrowserRouter>
