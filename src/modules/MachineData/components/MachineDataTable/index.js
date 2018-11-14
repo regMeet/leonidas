@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import filter from 'lodash/fp/filter';
 import find from 'lodash/fp/find';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Card } from 'reactstrap';
 import {
   SortingState,
@@ -49,8 +50,7 @@ class MachineDataSection extends PureComponent {
   static defaultProps = {
     machineData: null,
     errorMessage: '',
-    // TODO: take this out
-    // put some other loading spinners when creating, editing, deleting
+    // TODO: put some other loading spinners when creating, editing, deleting
   };
 
   constructor(props) {
@@ -110,7 +110,7 @@ class MachineDataSection extends PureComponent {
             : {
                 name: 'Maquina A', // look for the available machines
                 temperature: 100,
-                date: new Date().toISOString().split('T')[0],
+                date: moment().format(),
               },
       ),
     });
@@ -173,7 +173,6 @@ class MachineDataSection extends PureComponent {
       return <Loading />;
     }
 
-    // TODO: add date picker
     // TODO: make some fields mandatory
 
     return (
