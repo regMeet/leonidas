@@ -22,11 +22,11 @@ import {
   PagingPanel,
   TableSummaryRow,
 } from '@devexpress/dx-react-grid-bootstrap4';
-import TemperatureTypeProvider from './cellProviders/temperature-type-provider';
-import DateTypeProvider from './cellProviders/date-type-provider';
-import HighlightedCell from './cellTypes/highlighted-cell';
-import Loading from './partials/loading';
-import CommandButtons from './partials/CommandButtons';
+import TemperatureTypeProvider from 'components/Table/cellProviders/temperature-type-provider';
+import DateTypeProvider from 'components/Table/cellProviders/date-type-provider';
+import HighlightedCell from 'components/Table/cellTypes/highlighted-cell';
+import Loading from 'components/Loading';
+import CommandButtons from 'components/Table/CommandButtons';
 
 const Cell = props => {
   const { column } = props;
