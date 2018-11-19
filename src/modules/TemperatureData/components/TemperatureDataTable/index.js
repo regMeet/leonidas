@@ -25,6 +25,7 @@ import {
 import TemperatureTypeProvider from 'components/Table/cellProviders/temperature-type-provider';
 import DateTypeProvider from 'components/Table/cellProviders/date-type-provider';
 import HighlightedCell from 'components/Table/cellTypes/highlighted-cell';
+import LookupEditCell from 'components/Table/cellTypes/lookup-edit-cell';
 import Loading from 'components/Loading';
 import CommandButtons from 'components/Table/CommandButtons';
 
@@ -40,6 +41,7 @@ class TemperatureDataSection extends PureComponent {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
     data: PropTypes.array,
+    machineData: PropTypes.array,
     errorMessage: PropTypes.string,
     fetchData: PropTypes.func.isRequired,
     createDataEntry: PropTypes.func.isRequired,
@@ -49,6 +51,7 @@ class TemperatureDataSection extends PureComponent {
 
   static defaultProps = {
     data: null,
+    machineData: null,
     errorMessage: '',
   };
 
@@ -100,29 +103,34 @@ class TemperatureDataSection extends PureComponent {
 
   changeRowChanges = rowChanges => this.setState({ rowChanges });
 
-  changeAddedRows = addedRows =>
+  changeAddedRows = addedRows => {
+    const { machineData } = this.props;
     this.setState({
       addedRows: addedRows.map(
         row =>
           Object.keys(row).length
             ? row
             : {
-                name: 'Maquina A', // look for the available machines
+                name: machineData[0].name, // TODO: look for the available machines
                 temperature: 100,
                 date: moment().format(),
               },
       ),
     });
+  };
 
   commitChanges = ({ added, changed, deleted }) => {
     const { createDataEntry, updateDataById, data } = this.props;
     const { deletingRowIds } = this.state;
     if (added) {
+      console.log('added', added);
       createDataEntry(added);
       this.setState({ addedRows: [] });
     }
     if (changed) {
+      console.log('changed', changed);
       updateDataById(changed);
+      this.setState({ editingRowIds: [] });
     }
     if (deleted) {
       const newDeletingRowIds = [...deletingRowIds, deleted[0]];
@@ -143,6 +151,23 @@ class TemperatureDataSection extends PureComponent {
       deleteDataById(rowId);
     });
     this.setState({ deletingRowIds: [] });
+  };
+
+  cell = props => {
+    const { column } = props;
+    if (column.name === 'temperature') {
+      return <HighlightedCell {...props} />;
+    }
+    return <Table.Cell {...props} />;
+  };
+
+  editCell = props => {
+    const { machineData } = this.props;
+    const { column } = props;
+    if (column.name === 'name' && machineData) {
+      return <LookupEditCell {...props} availableColumnValues={machineData} />;
+    }
+    return <TableEditRow.Cell {...props} />;
   };
 
   render() {
@@ -206,9 +231,9 @@ class TemperatureDataSection extends PureComponent {
           <TemperatureTypeProvider for={temperatureColumns} />
           <DateTypeProvider for={dateColumns} />
 
-          <Table columnExtensions={tableColumnExtensions} cellComponent={Cell} />
+          <Table columnExtensions={tableColumnExtensions} cellComponent={this.cell} />
           <TableHeaderRow showSortingControls />
-          <TableEditRow />
+          <TableEditRow cellComponent={this.editCell} />
           <TableEditColumn
             width={120}
             showAddCommand={!addedRows.length}

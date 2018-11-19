@@ -10,6 +10,7 @@ import TemperatureDataTable from 'modules/TemperatureData/components/Temperature
 
 const mapStateToProps = state => ({
   data: selectors.getData(state),
+  machineData: selectors.getMachineData(state),
   isLoading: selectors.isLoading(state),
   errorMessage: selectors.getErrorMessage(state),
 });

@@ -103,6 +103,7 @@ class MachineDataSection extends PureComponent {
     }
     if (changed) {
       updateMachineDataById(changed);
+      this.setState({ editingRowIds: [] });
     }
     if (deleted) {
       const newDeletingRowIds = [...deletingRowIds, deleted[0]];

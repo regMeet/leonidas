@@ -14,7 +14,7 @@ DateFormatter.propTypes = {
 
 const DateEditor = ({ value, onValueChange }) => (
   <DatePicker
-    selected={moment(value)}
+    selected={moment(value).startOf('day')}
     onChange={changed => onValueChange(changed && changed.format())}
     placeholderText="Pick a day"
   />

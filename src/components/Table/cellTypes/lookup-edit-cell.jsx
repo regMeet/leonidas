@@ -15,8 +15,8 @@ const LookupEditCell = ({ column, availableColumnValues, value, onValueChange })
       onChange={e => onValueChange(e.target.value)}
     >
       {availableColumnValues.map(val => (
-        <option key={val} value={val}>
-          {val}
+        <option key={val.id} value={val.name}>
+          {val.name}
         </option>
       ))}
     </select>
@@ -26,7 +26,7 @@ const LookupEditCell = ({ column, availableColumnValues, value, onValueChange })
 LookupEditCell.propTypes = {
   column: PropTypes.object.isRequired,
   availableColumnValues: PropTypes.array.isRequired,
-  value: PropTypes.object.isRequired,
+  value: PropTypes.string.isRequired,
   onValueChange: PropTypes.func.isRequired,
 };
 

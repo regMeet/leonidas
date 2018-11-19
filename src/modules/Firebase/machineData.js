@@ -27,7 +27,7 @@ export const getMachineDataByIdDB = async id => {
 export const getMachineDataDB = async () => {
   let entries = null;
   try {
-    const entriesDocument = await dbMachineData.get();
+    const entriesDocument = await dbMachineData.orderBy('name').get();
     entries = map(entryDoc => ({ ...entryDoc.data(), id: entryDoc.id }))(entriesDocument.docs);
   } catch (error) {
     console.log('error reading entry of machine data from Firebase', error);

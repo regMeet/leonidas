@@ -29,7 +29,9 @@ export const getDataByIdDB = async id => {
 export const getDataDB = async () => {
   let entries = null;
   try {
-    const entriesDocument = await DB.get();
+    const entriesDocument = await DB.orderBy('date')
+      .orderBy('name')
+      .get();
     entries = map(entryDoc => ({ ...entryDoc.data(), id: entryDoc.id }))(entriesDocument.docs);
   } catch (error) {
     console.log(`error reading entries of ${dbName} data from Firebase: ${error}`);
