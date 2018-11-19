@@ -3,6 +3,7 @@ import auth, { USER_LOGOUT } from 'modules/Auth';
 import users from 'modules/Users';
 import machineData from 'modules/MachineData';
 import temperatureDate from 'modules/TemperatureData';
+import chartData from 'modules/MachineCharts';
 import persistConfig from './persistConfig';
 
 const reducers = {
@@ -10,6 +11,7 @@ const reducers = {
   users,
   machineData,
   temperatureDate,
+  chartData,
 };
 
 const appReducer = persistCombineReducers(persistConfig, reducers);

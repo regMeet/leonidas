@@ -28,6 +28,7 @@ import HighlightedCell from 'components/Table/cellTypes/highlighted-cell';
 import LookupEditCell from 'components/Table/cellTypes/lookup-edit-cell';
 import Loading from 'components/Loading';
 import CommandButtons from 'components/Table/CommandButtons';
+import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 
 const Cell = props => {
   const { column } = props;

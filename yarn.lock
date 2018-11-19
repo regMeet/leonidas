@@ -403,33 +403,57 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@devexpress/dx-core@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-core/-/dx-core-1.8.0.tgz#dda91b8b33e6e1c12d47d9e7b8809b7715442bfc"
-
-"@devexpress/dx-grid-core@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-grid-core/-/dx-grid-core-1.8.0.tgz#b77982eb925447ee3835f5cb3aefefb66faee28a"
-
-"@devexpress/dx-react-core@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-core/-/dx-react-core-1.8.0.tgz#13d4d733fc78b85b716a4189474e8e78cff2da9c"
+"@devexpress/dx-chart-core@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-chart-core/-/dx-chart-core-1.9.0.tgz#ca12297f4f02e5017ce8e2408ed0d99b686a1d5c"
   dependencies:
-    "@devexpress/dx-core" "^1.8.0"
-    prop-types "^15.6.2"
+    d3-array "^1.2.4"
+    d3-scale "^2.1.2"
+    d3-shape "^1.2.2"
 
-"@devexpress/dx-react-grid-bootstrap4@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid-bootstrap4/-/dx-react-grid-bootstrap4-1.8.0.tgz#26b357db1ec53dc094c58154a97fdb65619de3a5"
+"@devexpress/dx-core@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-core/-/dx-core-1.9.0.tgz#25f666a15e185edd685920af3e8c306eeda0786e"
+
+"@devexpress/dx-grid-core@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-grid-core/-/dx-grid-core-1.9.0.tgz#40f12dc48ee5cc5d5be3140d23ff61e5c2b6ff31"
+
+"@devexpress/dx-react-chart-bootstrap4@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-chart-bootstrap4/-/dx-react-chart-bootstrap4-1.9.0.tgz#86f6e71582d041a62b4fdf2f24de940d144a9b8f"
   dependencies:
     classnames "^2.2.6"
     prop-types "^15.6.2"
 
-"@devexpress/dx-react-grid@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid/-/dx-react-grid-1.8.0.tgz#743f339de155ec2ae561071063992603bc83d0fb"
+"@devexpress/dx-react-chart@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-chart/-/dx-react-chart-1.9.0.tgz#45bffa9978b44242fbb626a42eaa6ae4c742440a"
   dependencies:
-    "@devexpress/dx-grid-core" "^1.8.0"
+    "@devexpress/dx-chart-core" "^1.9.0"
+    d3-scale "^2.1.2"
+    d3-shape "^1.2.2"
+    prop-types "^15.6.2"
+
+"@devexpress/dx-react-core@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-core/-/dx-react-core-1.9.0.tgz#5b17b0959add43b8c4bdd4e02139d64f445a96e5"
+  dependencies:
+    "@devexpress/dx-core" "^1.9.0"
+    prop-types "^15.6.2"
+
+"@devexpress/dx-react-grid-bootstrap4@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid-bootstrap4/-/dx-react-grid-bootstrap4-1.9.0.tgz#22b3bdfb99334a85f3aa119a9c68ed0a53cc33f2"
+  dependencies:
+    classnames "^2.2.6"
+    prop-types "^15.6.2"
+
+"@devexpress/dx-react-grid@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid/-/dx-react-grid-1.9.0.tgz#143d8bb94e9b8664701ad1d54526947279eb7b6b"
+  dependencies:
+    "@devexpress/dx-grid-core" "^1.9.0"
     prop-types "^15.6.2"
 
 "@firebase/app-types@0.3.2":
@@ -3057,6 +3081,59 @@ currently-unhandled@^0.4.1:
 cyclist@~0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
+
+d3-array@^1.2.0, d3-array@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.4.tgz#635ce4d5eea759f6f605863dbcfc30edc737f71f"
+
+d3-collection@1:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/d3-collection/-/d3-collection-1.0.7.tgz#349bd2aa9977db071091c13144d5e4f16b5b310e"
+
+d3-color@1:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/d3-color/-/d3-color-1.2.3.tgz#6c67bb2af6df3cc8d79efcc4d3a3e83e28c8048f"
+
+d3-format@1:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/d3-format/-/d3-format-1.3.2.tgz#6a96b5e31bcb98122a30863f7d92365c00603562"
+
+d3-interpolate@1:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-1.3.2.tgz#417d3ebdeb4bc4efcc8fd4361c55e4040211fd68"
+  dependencies:
+    d3-color "1"
+
+d3-path@1:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.7.tgz#8de7cd693a75ac0b5480d3abaccd94793e58aae8"
+
+d3-scale@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/d3-scale/-/d3-scale-2.1.2.tgz#4e932b7b60182aee9073ede8764c98423e5f9a94"
+  dependencies:
+    d3-array "^1.2.0"
+    d3-collection "1"
+    d3-format "1"
+    d3-interpolate "1"
+    d3-time "1"
+    d3-time-format "2"
+
+d3-shape@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/d3-shape/-/d3-shape-1.2.2.tgz#f9dba3777a5825f9a8ce8bc928da08c17679e9a7"
+  dependencies:
+    d3-path "1"
+
+d3-time-format@2:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/d3-time-format/-/d3-time-format-2.1.3.tgz#ae06f8e0126a9d60d6364eac5b1533ae1bac826b"
+  dependencies:
+    d3-time "1"
+
+d3-time@1:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.10.tgz#8259dd71288d72eeacfd8de281c4bf5c7393053c"
 
 d@1:
   version "1.0.0"

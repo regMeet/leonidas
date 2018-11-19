@@ -24,6 +24,9 @@ const AdminNavBar = ({ name, photoURL, logout }) => (
         <Link to="/">Home</Link>
       </ButtonWrapper>
       <ButtonWrapper>
+        <Link to="/machine-charts">Machine Charts</Link>
+      </ButtonWrapper>
+      <ButtonWrapper>
         <Link to="/users">Users</Link>
       </ButtonWrapper>
       <ButtonWrapper>

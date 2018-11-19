@@ -24,6 +24,9 @@ const LoggedNavBar = ({ name, photoURL, logout }) => (
         <Link to="/">Home</Link>
       </ButtonWrapper>
       <ButtonWrapper>
+        <Link to="/machine-charts">Machine Charts</Link>
+      </ButtonWrapper>
+      <ButtonWrapper>
         <Avatar src={photoURL} />
         <span>{`Welcome user ${name}`}</span>
       </ButtonWrapper>

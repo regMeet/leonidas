@@ -9,6 +9,7 @@ import { Route, Switch, BrowserRouter } from 'react-router-dom';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Users from 'pages/Users';
+import MachineCharts from 'pages/MachineCharts';
 import MachineData from 'pages/MachineData';
 import TemperatureData from 'pages/TemperatureData';
 import NoMatch from 'pages/NoMatch';
@@ -16,7 +17,7 @@ import NoMatch from 'pages/NoMatch';
 import withRole from 'modules/Auth/hocs/withRole';
 
 const AdminRole = withRole(['ADMIN']);
-// const UserRole = withAuth(['USER'])
+const UserRole = withRole(['ADMIN', 'USER']);
 
 const propTypes = {
   store: PropTypes.object.isRequired,
@@ -38,6 +39,7 @@ const App = ({ store, persistor, history }) => (
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
+            <Route path="/machine-charts" component={UserRole(MachineCharts)} />
             <Route path="/users" component={AdminRole(Users)} />
             <Route path="/machine-data" component={AdminRole(MachineData)} />
             <Route path="/temperature-data" component={AdminRole(TemperatureData)} />

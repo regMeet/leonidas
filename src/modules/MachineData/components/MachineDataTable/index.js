@@ -20,6 +20,7 @@ import {
 } from '@devexpress/dx-react-grid-bootstrap4';
 import Loading from 'components/Loading';
 import CommandButtons from 'components/Table/CommandButtons';
+import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 
 class MachineDataSection extends PureComponent {
   static propTypes = {
