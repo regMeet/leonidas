@@ -2,7 +2,7 @@ import map from 'lodash/fp/map';
 import find from 'lodash/fp/find';
 import reject from 'lodash/fp/reject';
 import switchcase from 'utils/switchcase';
-import { getMachineDataDB } from 'modules/Firebase/machineData';
+import { fetchMachineData } from 'modules/MachineData';
 import {
   createEntryDB,
   getDataDB,
@@ -13,20 +13,17 @@ import i18nConstants from './i18nConstants';
 
 // Initial State
 const initialState = {
-  machineDataEntries: [],
   entries: [],
   isLoading: false,
   errorMessage: '',
 };
 
 // Selectors
-const getMachineData = state => state.temperatureDate.machineDataEntries;
 const getData = state => state.temperatureDate.entries;
 const isLoading = state => state.temperatureDate.isLoading;
 const getErrorMessage = state => state.temperatureDate.errorMessage;
 
 export const selectors = {
-  getMachineData,
   getData,
   isLoading,
   getErrorMessage,
@@ -34,10 +31,6 @@ export const selectors = {
 
 // Actions
 export const FETCH_ENTRIES_START = 'leonidas/TemperatureData/FETCH_ENTRIES_START';
-export const FETCH_MACHINE_DATA_ENTRIES_SUCCESS =
-  'leonidas/TemperatureData/FETCH_MACHINE_DATA_ENTRIES_SUCCESS';
-export const FETCH_MACHINE_DATA_ENTRIES_FAILURE =
-  'leonidas/TemperatureData/FETCH_MACHINE_DATA_ENTRIES_FAILURE';
 export const FETCH_ENTRIES_SUCCESS = 'leonidas/TemperatureData/FETCH_ENTRIES_SUCCESS';
 export const FETCH_ENTRIES_FAILURE = 'leonidas/TemperatureData/FETCH_ENTRIES_FAILURE';
 
@@ -56,16 +49,6 @@ export const ACTION_DELETE_FAILURE = 'leonidas/TemperatureData/ACTION_DELETE_FAI
 // Action creators
 const fetchEntriesStart = () => ({
   type: FETCH_ENTRIES_START,
-});
-
-const fetchMachineDataEntriesSuccess = entries => ({
-  type: FETCH_MACHINE_DATA_ENTRIES_SUCCESS,
-  payload: entries,
-});
-
-const fetchMachineDataEntriesFailure = error => ({
-  type: FETCH_MACHINE_DATA_ENTRIES_FAILURE,
-  payload: error,
 });
 
 const fetchEntriesSuccess = entries => ({
@@ -124,15 +107,7 @@ const deleteEntryFailure = error => ({
 export const fetchData = () => async dispatch => {
   dispatch(fetchEntriesStart());
 
-  try {
-    const entries = await getMachineDataDB();
-    dispatch(fetchMachineDataEntriesSuccess(entries));
-    // TODO: order by name
-  } catch (err) {
-    console.log('Firebase error', err);
-    dispatch(fetchMachineDataEntriesFailure(err || i18nConstants['Api.GenericError']));
-    return;
-  }
+  await dispatch(fetchMachineData());
 
   try {
     const entries = await getDataDB();
@@ -193,15 +168,6 @@ export default (state = initialState, action) =>
       ...state,
       isLoading: true,
     }),
-    [FETCH_MACHINE_DATA_ENTRIES_SUCCESS]: () => ({
-      ...state,
-      machineDataEntries: action.payload,
-    }),
-    [FETCH_MACHINE_DATA_ENTRIES_FAILURE]: () => ({
-      ...state,
-      isLoading: false,
-      errorMessage: action.payload,
-    }),
     [FETCH_ENTRIES_SUCCESS]: () => ({
       ...state,
       isLoading: false,
@@ -210,6 +176,7 @@ export default (state = initialState, action) =>
     [FETCH_ENTRIES_FAILURE]: () => ({
       ...state,
       isLoading: false,
+      entries: [],
       errorMessage: action.payload,
     }),
     // creating new entry

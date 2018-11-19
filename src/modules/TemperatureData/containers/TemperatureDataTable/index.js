@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { selectors as MachineDataSelectors } from 'modules/MachineData';
 import {
   selectors,
   fetchData,
@@ -10,9 +11,9 @@ import TemperatureDataTable from 'modules/TemperatureData/components/Temperature
 
 const mapStateToProps = state => ({
   data: selectors.getData(state),
-  machineData: selectors.getMachineData(state),
-  isLoading: selectors.isLoading(state),
-  errorMessage: selectors.getErrorMessage(state),
+  machineData: MachineDataSelectors.getMachineData(state),
+  isLoading: MachineDataSelectors.isLoading(state) || selectors.isLoading(state),
+  errorMessage: MachineDataSelectors.getErrorMessage(state) || selectors.getErrorMessage(state),
 });
 
 const mapDispatchToProps = {

@@ -181,6 +181,7 @@ export default (state = initialState, action) =>
     [FETCH_ENTRIES_FAILURE]: () => ({
       ...state,
       isLoading: false,
+      entries: [],
       errorMessage: action.payload,
     }),
     // creating new entry
