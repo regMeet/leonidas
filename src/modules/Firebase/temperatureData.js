@@ -39,6 +39,21 @@ export const getDataDB = async () => {
   return entries;
 };
 
+export const getDataDBByDate = async (startDate, endDate) => {
+  let entries = null;
+  try {
+    const entriesDocument = await DB.where('date', '>=', startDate)
+      .where('date', '<=', endDate)
+      .orderBy('date')
+      .orderBy('name')
+      .get();
+    entries = map(entryDoc => ({ ...entryDoc.data(), id: entryDoc.id }))(entriesDocument.docs);
+  } catch (error) {
+    console.log(`error reading entries of ${dbName} data from Firebase: ${error}`);
+  }
+  return entries;
+};
+
 export const updateDataByIdDB = async entry => {
   const updatedEntry = {
     ...entry,

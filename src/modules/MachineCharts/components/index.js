@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Card } from 'reactstrap';
 import {
   Chart,
@@ -11,6 +12,12 @@ import {
 } from '@devexpress/dx-react-chart-bootstrap4';
 import { Scale, Animation } from '@devexpress/dx-react-chart';
 import '@devexpress/dx-react-chart-bootstrap4/dist/dx-react-chart-bootstrap4.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
+import ButtonWrapper from 'components/Styles/ButtonWrapper';
+import Button from 'components/Button';
+import Loading from 'components/Loading';
 
 const format = () => tick => tick;
 const Root = props => <Legend.Root {...props} className="m-auto flex-row" />;
@@ -19,131 +26,134 @@ const Label = props => <Legend.Label {...props} className="pt-2" />;
 
 const ValueLabel = props => {
   const { text } = props;
-  return <ValueAxis.Label {...props} text={`${text}%`} />;
+  return <ValueAxis.Label {...props} text={`${text}°C`} />;
 };
 const EmptyComponent = () => null;
 
 class MachineCharts extends PureComponent {
+  static propTypes = {
+    fetchData: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    errorMessage: PropTypes.string,
+    chartData: PropTypes.array,
+    machineNames: PropTypes.array,
+    minTemperature: PropTypes.number,
+    maxTemperature: PropTypes.number,
+  };
+
+  static defaultProps = {
+    chartData: null,
+    machineNames: null,
+    errorMessage: '',
+    minTemperature: null,
+    maxTemperature: null,
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      chartData: [
-        {
-          year: 1993,
-          tvNews: 19,
-          church: 29,
-          military: 32,
-        },
-        {
-          year: 1995,
-          tvNews: 13,
-          church: 32,
-          military: 33,
-        },
-        {
-          year: 1997,
-          tvNews: 14,
-          church: 35,
-          military: 30,
-        },
-        {
-          year: 1999,
-          tvNews: 13,
-          church: 32,
-          military: 34,
-        },
-        {
-          year: 2001,
-          tvNews: 15,
-          church: 28,
-          military: 32,
-        },
-        {
-          year: 2003,
-          tvNews: 16,
-          church: 27,
-          military: 48,
-        },
-        {
-          year: 2006,
-          tvNews: 12,
-          church: 28,
-          military: 41,
-        },
-        {
-          year: 2008,
-          tvNews: 11,
-          church: 26,
-          military: 45,
-        },
-        {
-          year: 2010,
-          tvNews: 10,
-          church: 25,
-          military: 44,
-        },
-        {
-          year: 2012,
-          tvNews: 11,
-          church: 25,
-          military: 43,
-        },
-        {
-          year: 2014,
-          tvNews: 10,
-          church: 25,
-          military: 39,
-        },
-        {
-          year: 2016,
-          tvNews: 8,
-          church: 20,
-          military: 41,
-        },
-        {
-          year: 2018,
-          tvNews: 10,
-          church: 20,
-          military: 43,
-        },
-      ],
+      startDate: moment().startOf('month'),
+      endDate: moment().endOf('day'),
     };
   }
 
-  render() {
-    const { chartData } = this.state;
-
+  renderDatePickers = () => {
+    const { startDate, endDate } = this.state;
+    const { fetchData } = this.props;
     return (
-      <Card>
-        <Chart data={chartData} className="pr-3" width={1000}>
-          <ArgumentAxis tickFormat={format} />
-          <ValueAxis
-            max={50}
-            labelComponent={ValueLabel}
-            lineComponent={EmptyComponent}
-            tickComponent={EmptyComponent}
+      <div>
+        <div>
+          Start Date:
+          <DatePicker
+            selected={startDate}
+            onChange={date => this.setState({ startDate: date })}
+            placeholderText="Start Date"
           />
-          <ValueGrid />
+        </div>
 
-          <LineSeries name="TV news" valueField="tvNews" argumentField="year" />
-          <LineSeries name="Church" valueField="church" argumentField="year" />
-          <LineSeries name="Military" valueField="military" argumentField="year" />
-          <Legend
-            position="bottom"
-            rootComponent={Root}
-            itemComponent={Item}
-            labelComponent={Label}
+        <div>
+          End Date:
+          <DatePicker
+            selected={endDate}
+            onChange={date => this.setState({ endDate: date })}
+            placeholderText="End Date"
           />
-          <Title
-            text={`Confidence in Institutions in American society ${'\n'}(Great deal)`}
-            className="w-100 text-center mb-2"
+        </div>
+
+        <ButtonWrapper>
+          <Button
+            primary
+            value="Draw Chart"
+            onClick={() => fetchData(startDate.format(), endDate.format())}
           />
-          <Animation />
-          <Scale />
-        </Chart>
-      </Card>
+        </ButtonWrapper>
+      </div>
     );
+  };
+
+  getLineSeries = () => {
+    const { machineNames } = this.props;
+
+    return machineNames.map(name => (
+      <LineSeries key={name} name={name} valueField={name} argumentField="date" />
+    ));
+  };
+
+  render() {
+    const { isLoading, errorMessage, chartData, minTemperature, maxTemperature } = this.props;
+
+    if (errorMessage) {
+      return (
+        <div>
+          {this.renderDatePickers()}
+          Error:
+          {errorMessage}
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <div>
+          {this.renderDatePickers()}
+          <Loading />
+        </div>
+      );
+    }
+
+    if (chartData.length) {
+      return (
+        <Card>
+          {this.renderDatePickers()}
+
+          <Chart data={chartData} className="pr-3" width={1000}>
+            <ArgumentAxis tickFormat={format} />
+            <ValueAxis
+              min={minTemperature - 20}
+              max={maxTemperature + 20}
+              labelComponent={ValueLabel}
+              lineComponent={EmptyComponent}
+              tickComponent={EmptyComponent}
+            />
+            <ValueGrid />
+
+            {this.getLineSeries()}
+            <Legend
+              position="bottom"
+              rootComponent={Root}
+              itemComponent={Item}
+              labelComponent={Label}
+            />
+            <Title text={`Machine Temperatures ${'\n'}`} className="w-100 text-center mb-2" />
+            <Animation />
+            <Scale />
+          </Chart>
+        </Card>
+      );
+    }
+
+    return this.renderDatePickers();
   }
 }
 

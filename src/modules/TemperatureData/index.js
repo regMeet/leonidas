@@ -5,6 +5,7 @@ import switchcase from 'utils/switchcase';
 import { fetchMachineData } from 'modules/MachineData';
 import {
   createEntryDB,
+  getDataDBByDate,
   getDataDB,
   updateDataByIdDB,
   deleteDataByIdDB,
@@ -104,6 +105,17 @@ const deleteEntryFailure = error => ({
 });
 
 // Thunks
+export const fetchDataByDate = async (startDate, endDate) => {
+  let entries = [];
+
+  try {
+    entries = await getDataDBByDate(startDate, endDate);
+  } catch (err) {
+    console.log('Firebase error', err);
+  }
+  return entries;
+};
+
 export const fetchData = () => async dispatch => {
   dispatch(fetchEntriesStart());
 
@@ -112,7 +124,6 @@ export const fetchData = () => async dispatch => {
   try {
     const entries = await getDataDB();
     dispatch(fetchEntriesSuccess(entries));
-    // TODO: order by date
   } catch (err) {
     console.log('Firebase error', err);
     dispatch(fetchEntriesFailure(err || i18nConstants['Api.GenericError']));

@@ -124,12 +124,10 @@ class TemperatureDataSection extends PureComponent {
     const { createDataEntry, updateDataById, data } = this.props;
     const { deletingRowIds } = this.state;
     if (added) {
-      console.log('added', added);
       createDataEntry(added);
       this.setState({ addedRows: [] });
     }
     if (changed) {
-      console.log('changed', changed);
       updateDataById(changed);
       this.setState({ editingRowIds: [] });
     }
