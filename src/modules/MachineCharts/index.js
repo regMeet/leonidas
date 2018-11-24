@@ -1,10 +1,9 @@
 import switchcase from 'utils/switchcase';
 import { createSelector } from 'reselect';
-import flow from 'lodash/fp/flow';
 import forEach from 'lodash/fp/forEach';
-import mapFp from 'lodash/fp/map';
-import map from 'lodash/map';
-import uniqByFp from 'lodash/fp/uniqBy';
+import map from 'lodash/fp/map';
+import flow from 'lodash/fp/flow';
+import reject from 'lodash/fp/reject';
 import minBy from 'lodash/fp/minBy';
 import maxBy from 'lodash/fp/maxBy';
 import { fetchDataByDate } from 'modules/TemperatureData';
@@ -15,12 +14,14 @@ const initialState = {
   entries: [],
   isLoading: false,
   errorMessage: '',
+  machineNames: null,
 };
 
 // Selectors
 const getEntries = state => state.chartData.entries;
 const isLoading = state => state.chartData.isLoading;
 const getErrorMessage = state => state.chartData.errorMessage;
+const getMachineNames = state => state.chartData.machineNames;
 
 const getChartData = createSelector(getEntries, entries => {
   // {
@@ -42,25 +43,19 @@ const getChartData = createSelector(getEntries, entries => {
 
     temperatureMapByDate[date] = {
       ...temperatureMapByDate[date],
-      [entry.name]: entry.temperature, // .replace(/\s/g, '')
+      date,
+      [entry.name]: entry.temperature,
     };
   })(entries);
-
-  // it doesn't work
-  // forEach((key, entry) => {
-  //   console.log('new key', key);
-  //   console.log('new entry', entry);
-  // })(temperatureMapByDate);
-
-  const chartData = map(temperatureMapByDate, (entry, key) => ({ ...entry, date: key }));
-  return chartData;
+  // TODO: use another method to convert hash to map
+  return map(e => ({ ...e }))(temperatureMapByDate);
 });
 
-const getMachineNames = createSelector(getEntries, entries =>
+const getWhiteListNames = createSelector(getMachineNames, machineNames =>
   flow(
-    mapFp(e => e.name), // .replace(/\s/g, '')
-    uniqByFp(e => e),
-  )(entries),
+    reject(m => !m.checked),
+    map(m => m.name),
+  )(machineNames),
 );
 
 const getMinTemperature = createSelector(
@@ -75,9 +70,10 @@ const getMaxTemperature = createSelector(
 
 export const selectors = {
   getChartData,
-  getMachineNames,
   getMinTemperature,
   getMaxTemperature,
+  getMachineNames,
+  getWhiteListNames,
   isLoading,
   getErrorMessage,
 };
@@ -86,6 +82,8 @@ export const selectors = {
 export const FETCH_DATA_START = 'leonidas/ChartData/FETCH_DATA_START';
 export const FETCH_DATA_SUCCESS = 'leonidas/ChartData/FETCH_DATA_SUCCESS';
 export const FETCH_DATA_FAILURE = 'leonidas/ChartData/FETCH_DATA_FAILURE';
+export const SET_MACHINE_NAMES = 'leonidas/ChartData/SET_MACHINE_NAMES';
+export const CHECKBOX_MACHINE_NAME = 'leonidas/ChartData/CHECKBOX_MACHINE_NAME';
 
 // Action creators
 const fetchDataStart = () => ({
@@ -102,14 +100,40 @@ const fetchDataFailure = error => ({
   payload: error,
 });
 
+const setMachineNames = whiteListMachineNames => ({
+  type: SET_MACHINE_NAMES,
+  payload: whiteListMachineNames,
+});
+
+export const checkboxMachineName = (name, value) => ({
+  type: CHECKBOX_MACHINE_NAME,
+  payload: { name, value },
+});
+
 // Thunks
+export const createMachineNames = entries => async dispatch => {
+  const machineNames = {};
+  forEach(entry => {
+    // create map by machine name
+    const key = entry.name;
+    machineNames[key] = {
+      key,
+      name: entry.name,
+      checked: true,
+    };
+  })(entries);
+
+  dispatch(setMachineNames(machineNames));
+};
+
 export const fetchData = (startDate, endDate) => async dispatch => {
   dispatch(fetchDataStart());
 
   try {
     const entries = await fetchDataByDate(startDate, endDate);
     if (entries.length > 1) {
-      dispatch(fetchDataSuccess(entries));
+      await dispatch(createMachineNames(entries));
+      await dispatch(fetchDataSuccess(entries));
     } else {
       dispatch(fetchDataFailure('Need more than one entry'));
     }
@@ -125,6 +149,8 @@ export default (state = initialState, action) =>
     [FETCH_DATA_START]: () => ({
       ...state,
       isLoading: true,
+      entries: [],
+      machineNames: null,
       errorMessage: '',
     }),
     [FETCH_DATA_SUCCESS]: () => ({
@@ -136,5 +162,19 @@ export default (state = initialState, action) =>
       ...state,
       isLoading: false,
       errorMessage: action.payload,
+    }),
+    [SET_MACHINE_NAMES]: () => ({
+      ...state,
+      machineNames: action.payload,
+    }),
+    [CHECKBOX_MACHINE_NAME]: () => ({
+      ...state,
+      machineNames: {
+        ...state.machineNames,
+        [action.payload.name]: {
+          ...state.machineNames[action.payload.name],
+          checked: action.payload.value,
+        },
+      },
     }),
   })(state)(action.type);

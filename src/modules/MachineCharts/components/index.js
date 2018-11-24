@@ -18,6 +18,7 @@ import moment from 'moment';
 import ButtonWrapper from 'components/Styles/ButtonWrapper';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
+import CheckboxContainer from 'components/Checkbox/CheckboxContainer';
 
 const format = () => tick => tick;
 const Root = props => <Legend.Root {...props} className="m-auto flex-row" />;
@@ -33,20 +34,23 @@ const EmptyComponent = () => null;
 class MachineCharts extends PureComponent {
   static propTypes = {
     fetchData: PropTypes.func.isRequired,
+    checkboxMachineName: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
     chartData: PropTypes.array,
-    machineNames: PropTypes.array,
     minTemperature: PropTypes.number,
     maxTemperature: PropTypes.number,
+    machineNames: PropTypes.object,
+    whiteListMachineNames: PropTypes.array,
   };
 
   static defaultProps = {
     chartData: null,
-    machineNames: null,
     errorMessage: '',
     minTemperature: null,
     maxTemperature: null,
+    machineNames: null,
+    whiteListMachineNames: [],
   };
 
   constructor(props) {
@@ -56,6 +60,12 @@ class MachineCharts extends PureComponent {
       startDate: moment().startOf('month'),
       endDate: moment().endOf('day'),
     };
+  }
+
+  componentWillMount() {
+    const { startDate, endDate } = this.state;
+    const { fetchData } = this.props;
+    fetchData(startDate.format(), endDate.format());
   }
 
   renderDatePickers = () => {
@@ -92,16 +102,25 @@ class MachineCharts extends PureComponent {
     );
   };
 
-  getLineSeries = () => {
-    const { machineNames } = this.props;
+  getLineSeries = whiteListMachineNames => {
+    console.log('whiteListMachineNames', whiteListMachineNames);
 
-    return machineNames.map(name => (
+    return whiteListMachineNames.map(name => (
       <LineSeries key={name} name={name} valueField={name} argumentField="date" />
     ));
   };
 
   render() {
-    const { isLoading, errorMessage, chartData, minTemperature, maxTemperature } = this.props;
+    const {
+      checkboxMachineName,
+      isLoading,
+      errorMessage,
+      chartData,
+      minTemperature,
+      maxTemperature,
+      machineNames,
+      whiteListMachineNames,
+    } = this.props;
 
     if (errorMessage) {
       return (
@@ -122,10 +141,19 @@ class MachineCharts extends PureComponent {
       );
     }
 
-    if (chartData.length) {
+    // works just fine
+    // if (true) {
+    //   return (
+    //     <CheckboxContainer checkboxes={machineNames} onHandleCheckbox={checkboxMachineName} />
+    //   );
+    // }
+
+    if (chartData.length && machineNames) {
       return (
         <Card>
           {this.renderDatePickers()}
+
+          <CheckboxContainer checkboxes={machineNames} onHandleCheckbox={checkboxMachineName} />
 
           <Chart data={chartData} className="pr-3" width={1000}>
             <ArgumentAxis tickFormat={format} />
@@ -138,7 +166,8 @@ class MachineCharts extends PureComponent {
             />
             <ValueGrid />
 
-            {this.getLineSeries()}
+            {this.getLineSeries(whiteListMachineNames)}
+
             <Legend
               position="bottom"
               rootComponent={Root}
