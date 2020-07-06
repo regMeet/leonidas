@@ -42,7 +42,6 @@ export const logoutUser = () => ({
 });
 
 // Thunks
-/* eslint-disable no-unused-vars */
 export const login = () => async dispatch => {
   const user = await loginWithGoogle();
 
